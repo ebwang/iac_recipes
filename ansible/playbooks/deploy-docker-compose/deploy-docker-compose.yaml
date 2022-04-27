@@ -1,0 +1,50 @@
+
+---
+- hosts: all
+  name: "Deploy docker-compose {{ application }}"
+  serial: 1
+
+  tasks:
+    - name: "STOP DOCKER-COMPOSE - Stack"
+      shell: "cd /app/ && docker-compose -f docker-compose-{{ application }}.yaml down"
+      args:
+        executable: /bin/bash
+
+    - name: "COPY DOCKER-COMPOSE"
+      ansible.builtin.copy:
+        src: ../../docker-compose/{{ env }}/docker-compose.yaml
+        dest: /app/docker-compose-{{ application }}.yaml
+
+    - name: "COPY DOCKER ENVS"
+      ansible.builtin.copy:
+        src: ../../envs/{{ env }}/.envs
+        dest: /app/.envs/.env.{{ application }}
+
+    - name: "COPY REDIS CONF"
+      ansible.builtin.copy:
+        src: ../../envs/{{ env }}/redis-data-cache.properties
+        dest: /app/.envs/redis-data-cache.properties
+
+    - name: "REPLACE IMAGE TAG"
+      replace:
+        dest: /app/docker-compose-{{ application }}.yaml
+        regexp: 'app/{{ application }}:.*$'
+        replace: 'app/{{ application }}:{{ docker_tag }}'
+
+    - name: "START DOCKER-COMPOSE - Stack"
+      shell: "cd /app/ && docker-compose --compatibility -f docker-compose-{{ application }}.yaml up -d -V"
+      args:
+        executable: /bin/bash
+
+    - name: Teste de Implantacao
+      uri:
+        url: http://{{ ansible_host }}:{{ port_monitoring }}{{ uri_health_check }}
+        method: GET
+        status_code: 200
+        return_content: yes
+        validate_certs: no
+      register: response
+      until: response.status == 200
+      retries: 15
+      delay: 10
+
