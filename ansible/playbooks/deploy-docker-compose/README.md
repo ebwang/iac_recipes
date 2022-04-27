@@ -1,6 +1,6 @@
 # Playbook deploy-docker-compose
 
-Guys i use this script to automate the deployment of conatainers changing the image of docker-compose.
+Guys i usually do my deployments with jenkins using this script that change the docker-tag of docker-compose.
 The docker-compose needs to pre-exist before the scripts run docker-compose-{{ application }}.yaml, and i want to program a condition to view if exist.
 There are some files that are mounted inside of containers of docker-compose(The files which is copied)
 So all the environments are passed by Jenkins pipe. and i'm going to share soon.
