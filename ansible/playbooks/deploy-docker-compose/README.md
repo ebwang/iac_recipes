@@ -21,4 +21,4 @@ amazon.aws.aws_ec2 inventory – EC2 inventory source
 - env
 
 ## Usage/Examples
-ansible-playbook deploy-docker-compose.yaml --private-key <some-key> -i /root/ec2.py --ssh-extra-args '-o StrictHostKeyChecking=no' --user=<some-user> -e application=tomcat -e env=dev -e docker_tag=1.0 -e port_monitoring=8080 -e 'uri_health_check=/healthcheck'
+ansible-playbook deploy-docker-compose.yaml --private-key <some-key> --ssh-extra-args '-o StrictHostKeyChecking=no' --user=<some-user> -e application=tomcat -e env=dev -e docker_tag=1.0 -e port_monitoring=8080 -e 'uri_health_check=/healthcheck'
