@@ -1,0 +1,1 @@
+### Simply build a deployment with NodePort Service to minikube or anything inside kubeconfig file
